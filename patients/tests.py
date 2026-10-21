@@ -44,3 +44,9 @@ class PatientAuthenticationTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.patient.name)
+
+    def test_login_page_is_available_to_anonymous_users(self):
+        response = self.client.get(reverse('login'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Staff log in')

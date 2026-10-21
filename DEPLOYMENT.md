@@ -11,7 +11,7 @@ The current local SQLite database remains the default. Changing the database set
 
 ## Run locally with PostgreSQL
 
-1. Install Python and Docker Desktop.
+1. Install Python and either a PostgreSQL server or Docker Desktop.
 2. In PowerShell, from the project directory:
 
    ```powershell
@@ -27,10 +27,22 @@ The current local SQLite database remains the default. Changing the database set
    python -m pip install -r requirements.txt
    ```
 
-5. Start PostgreSQL and initialize the schema:
+5. Start PostgreSQL and initialize the schema. If using Docker Compose:
 
    ```powershell
-   docker compose up -d db
+   docker compose up -d --wait db
+   ```
+
+   If using an already-installed PostgreSQL server, create a dedicated role and database in pgAdmin or with an administrator account. Use the same local-only password in `.env`:
+
+   ```sql
+   CREATE USER dental_clinic WITH PASSWORD 'replace-with-a-local-only-password';
+   CREATE DATABASE dental_clinic OWNER dental_clinic;
+   ```
+
+   Then initialize the schema and create the first staff account:
+
+   ```powershell
    python manage.py migrate
    python manage.py createsuperuser
    ```
@@ -55,10 +67,9 @@ Do this as a planned maintenance operation, with a separate verified backup of `
    python manage.py dumpdata patients --indent 2 --output "$env:TEMP\clinic-data.json"
    ```
 
-2. Change `.env` to `DB_ENGINE=postgresql`, start the database, and run migrations:
+2. Change `.env` to `DB_ENGINE=postgresql`. Start the PostgreSQL service (or run `docker compose up -d --wait db` if using Compose), then run migrations:
 
    ```powershell
-   docker compose up -d db
    python manage.py migrate
    ```
 
@@ -88,14 +99,16 @@ Provide credentials through the host's secret manager or workload identity/IAM r
 
 Before exposing the website publicly:
 
-1. Set `DJANGO_DEBUG=False`, provide a unique `DJANGO_SECRET_KEY`, and configure `DJANGO_ALLOWED_HOSTS` with the site's hostname (hostnames only, no scheme).
+1. Set `DJANGO_DEBUG=False`, provide a unique `DJANGO_SECRET_KEY`, and configure `DJANGO_ALLOWED_HOSTS` with the site's hostname (hostnames only, no scheme). HTTPS redirects default to on when debug is off; if a trusted reverse proxy terminates TLS, set `DJANGO_SECURE_PROXY_SSL_HEADER=True` only when that proxy reliably sets/overwrites `X-Forwarded-Proto`.
 2. Set `DJANGO_CSRF_TRUSTED_ORIGINS` to the site's HTTPS origin, for example `https://clinic.example.com`.
 3. Use HTTPS, encrypted managed PostgreSQL, encrypted backups, a private document bucket, and host-managed secrets. Set up restore tests and monitoring.
 4. Run `python manage.py check --deploy` against the production environment.
 5. Create staff accounts with `python manage.py createsuperuser`; do not expose public registration. Patient pages now require a login.
 6. Confirm that patient routes, uploaded documents, database backups, application logs, and support workflows are limited to authorized staff. Determine and implement the health-data privacy requirements for the jurisdictions where the clinic operates.
 
-`DEBUG=False` intentionally requires `DJANGO_SECRET_KEY`; the development fallback key is generated only when debug mode is enabled. Secure cookies are enabled when debug mode is off, so production must use HTTPS.
+`DEBUG=False` intentionally requires `DJANGO_SECRET_KEY`; the development fallback key is generated only when debug mode is enabled. Secure cookies are enabled when debug mode is off, so production must use HTTPS. Configure `DJANGO_HSTS_SECONDS` only after HTTPS is working across the intended hostnames; enable `DJANGO_HSTS_INCLUDE_SUBDOMAINS` only if every subdomain supports HTTPS. HSTS preload is intentionally opt-in.
+
+Generate a production key with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` and enter it directly into the host's secret manager; do not save it in source control.
 
 ## Desktop and mobile apps
 

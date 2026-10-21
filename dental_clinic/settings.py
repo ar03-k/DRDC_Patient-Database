@@ -47,6 +47,24 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+_secure_ssl_redirect_setting = os.getenv('DJANGO_SECURE_SSL_REDIRECT', '').strip()
+SECURE_SSL_REDIRECT = (
+    _secure_ssl_redirect_setting.lower() in {'true', '1', 'yes'}
+    if _secure_ssl_redirect_setting
+    else not DEBUG
+)
+SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_HSTS_SECONDS', '0'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv(
+    'DJANGO_HSTS_INCLUDE_SUBDOMAINS',
+    'False',
+).lower() in {'true', '1', 'yes'}
+SECURE_HSTS_PRELOAD = os.getenv('DJANGO_HSTS_PRELOAD', 'False').lower() in {
+    'true',
+    '1',
+    'yes',
+}
+if os.getenv('DJANGO_SECURE_PROXY_SSL_HEADER', 'False').lower() in {'true', '1', 'yes'}:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
