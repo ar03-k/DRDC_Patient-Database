@@ -1,0 +1,76 @@
+{% extends 'patients/base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; min-height: 100vh; justify-content: flex-start; padding-top: 10px;">
+    <!-- Success message at the top -->
+    <div style="text-align: center; margin-bottom: 225px;">
+        <h2 style="margin-bottom: 20px; color: #756537;">Success!</h2>
+        <p style="margin-bottom: 30px; font-size: 1.25em; color: #756537;">
+            Patient added successfully!
+        </p>
+    </div>
+    
+    <!-- Buttons at the bottom -->
+    <div style="display: flex; gap: 20px; margin-top: 100px;">
+        <a href="{% url 'home' %}" class="btn btn-home">Return to Home</a>
+        <a href="{% url 'patient_detail' pk=request.session.last_patient_id %}" class="btn btn-view">View Patient</a>
+        <a href="{% url 'add_patient' %}" class="btn btn-add">Add New Patient</a>
+    </div>
+</div>
+
+{% block watermark %}
+<div class="global-watermark">
+    <img src="{% static 'patients/images/Clinic Logo.png' %}" alt="Clinic Logo">
+</div>
+{% endblock %}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Prevent scrolling */
+    }
+
+    .btn {
+        padding: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+        text-align: center;
+        min-width: 150px;
+    }
+    
+    .btn-home {
+        background-color: #756537;
+        color: #ffffe3;
+    }
+    
+    .btn-view {
+        background-color: #756537;
+        color: #ffffe3;
+    }
+    
+    .btn-add {
+        background-color: #756537;
+        color: #ffffe3;
+    }
+    
+    .global-watermark {
+        position: fixed;
+        top: 27.5%;
+        left: 50.75%;
+        transform: translateX(-50%);
+        opacity: 0.25;
+        z-index: -1;
+        pointer-events: none;
+    }
+    
+    .global-watermark img {
+        width: 500px;
+        height: auto;
+    }
+</style>
+{% endblock %}

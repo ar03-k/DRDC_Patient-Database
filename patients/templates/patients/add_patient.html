@@ -1,0 +1,266 @@
+{% extends 'patients/base.html' %}
+<!DOCTYPE html>
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="page-header"><b>Add New Patient</b></h2>
+    <form method="post" enctype="multipart/form-data" id="patient-form">
+        {% csrf_token %}
+
+        <div class="form-columns">
+            <div class="form-column">
+                <div class="form-row">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.age.label_tag }}
+                    {{ form.age }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.gender.label_tag }}
+                    {{ form.gender }}
+                </div>
+
+                <div class="form-row">
+                    {{ form.diagnosis.label_tag }}
+                    {{ form.diagnosis }}
+                </div>
+            
+                <div class="form-row">
+                    {{ form.treatment.label_tag }}
+                    {{ form.treatment }}
+                </div>
+                
+                <div class="file-upload-section" id="diagnosis-uploads">
+                    <h4>Diagnosis Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="diagnosis_files">
+                        <button type="button" class="btn btn-sm add-more">
+                            <span class="plus-icon">+</span>
+                            <span class="add-text">Add</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="file-upload-section" id="treatment-uploads">
+                    <h4>Treatment Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="treatment_files">
+                        <button type="button" class="btn btn-sm add-more">
+                            <span class="plus-icon">+</span>
+                            <span class="add-text">Add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-column">
+                <div class="form-row">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.date_of_diagnosis.label_tag }}
+                    {{ form.date_of_diagnosis }}
+                </div>
+
+                <div class="form-row">
+                    {{ form.medication.label_tag }}
+                    {{ form.medication }}
+                </div>
+            
+                <div class="form-row">
+                    {{ form.notes.label_tag }}
+                    {{ form.notes }}
+                </div>
+
+                <div class="file-upload-section" id="medication-uploads">
+                    <h4>Medication Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="medication_files">
+                        <button type="button" class="btn btn-sm add-more">
+                            <span class="plus-icon">+</span>
+                            <span class="add-text">Add</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="file-upload-section" id="other-uploads">
+                    <h4>Other Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="other_files">
+                        <button type="button" class="btn btn-sm add-more">
+                            <span class="plus-icon">+</span>
+                            <span class="add-text">Add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn"><b>Save Patient</b></button>
+    </form>
+</div>
+
+<div class="home-watermark">
+        <img src="{% static 'patients/images/Clinic Logo.png' %}" alt="Clinic Logo">
+</div>
+
+<style>
+    .global-watermark {
+        display: none;
+    }
+
+    .home-watermark {
+        position: fixed;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.75;
+        z-index: -1;
+    }
+
+    .home-watermark img {
+        width: 500px;
+        height: auto;
+    }
+
+    .page-header {
+        margin-bottom: 10px; /* Reduce from whatever it currently is */
+        margin-top: 0; /* Remove any top margin */
+    }
+
+    .form-container {
+        max-width: 1000px;
+        padding: 20px;
+        color: #756537;
+    }
+
+    h2.page-header {
+        margin-bottom: 10px; /* Specifically target the h2 */
+    }
+
+    .form-container {
+        max-width: 1000px;
+        padding: 20px;
+        color: #756537;
+        margin-left: 15px;
+    }
+    
+    .form-columns {
+        display: flex;
+        gap: 550px; 
+    }
+    
+    .form-column {
+        flex: 1;
+        min-width: 0; 
+    }
+    
+    .form-row {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    
+    .form-row label {
+        flex: 0 0 180px;
+        padding-right: 15px;
+        font-weight: 500;
+        color: #756537;
+        margin-top: 8px;
+    }
+    
+    .form-row input[type="text"],
+    .form-row input[type="number"],
+    .form-row input[type="email"],
+    .form-row input[type="date"],
+    .form-row select,
+    .form-row textarea {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #756537;
+        border-radius: 4px;
+        min-width: 200px; 
+    }
+    
+    .form-row input[type="gender"] {
+        width: 300px;
+    }
+
+    .form-row textarea {
+        height: 20px;
+        resize: vertical;
+    }
+    
+    .file-upload-section h4 {
+        margin-bottom: 10px;
+        color: #756537;
+    }
+    
+    .upload-group {
+        display: flex;
+        gap: 10px;
+        white-space: nowrap; /* Prevent text wrapping */
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        background-color: #918151;
+        color: #ffffe3;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        min-width: 80px; /* Add consistent minimum width */
+    }
+
+    .add-more {
+        background-color: #918151;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.add-more').forEach(button => {
+        button.addEventListener('click', function() {
+            const sectionId = this.closest('.file-upload-section').id;
+            const category = sectionId.replace('-uploads', '');
+            const newGroup = document.createElement('div');
+            newGroup.className = 'upload-group';
+            newGroup.innerHTML = `
+                <input type="file" name="${category}_files">
+                <button type="button" class="btn btn-sm remove-file">Remove</button>
+            `;
+            this.parentNode.parentNode.insertBefore(newGroup, this.parentNode.nextSibling);
+            
+            newGroup.querySelector('.remove-file').addEventListener('click', function() {
+                this.parentNode.remove();
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

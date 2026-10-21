@@ -1,0 +1,98 @@
+{% extends 'patients/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="page-header"><b>Edit Patient</b></h2>
+    <h3 class="page-header">{{ patient.name }}</h3>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-columns">
+            <div class="form-column">
+                <div class="form-row">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+                <div class="form-row">
+                    {{ form.age.label_tag }}
+                    {{ form.age }}
+                </div>
+                <div class="form-row">
+                    {{ form.gender.label_tag }}
+                    {{ form.gender }}
+                </div>
+            </div>
+            <div class="form-column">
+                <div class="form-row">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                </div>
+                <div class="form-row">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="form-row">
+                    {{ form.date_of_diagnosis.label_tag }}
+                    {{ form.date_of_diagnosis }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn1">Update Patient</button>
+        <button type="submit" class="btn2">Cancel</button>
+    </form>
+</div>
+
+<style>
+    .form-container {
+        padding: 20px;
+        color: #756537;
+    }
+
+    .form-row {
+        margin-bottom: 15px;
+    }
+
+    .btn1 {
+        padding: 10px 12.5px;
+        border: 1.5px solid #ffffe3;
+        border-radius: 4px;
+        background-color: #756537;
+        color: #ffffe3;
+        font-size: 15px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .btn2 {
+        padding: 10px 12.5px;
+        border: 1.5px solid #756537;
+        border-radius: 4px;
+        background-color: #ffffe3;
+        color: #756537;
+        font-size: 15px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .form-row label {
+        width: 150px; 
+        padding-right: 5px;
+    }
+    
+    .form-row input, 
+    .form-row select {
+        flex: 1;
+        max-width: 200px;
+        padding: 10px;
+        border: 1px solid #756537;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

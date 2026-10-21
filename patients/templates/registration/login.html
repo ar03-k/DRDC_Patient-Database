@@ -1,0 +1,46 @@
+{% extends 'patients/base.html' %}
+
+{% block content %}
+<main class="login-container">
+    <h2>Staff log in</h2>
+    {% if form.errors %}
+        <p class="error-message">The username or password was not recognized.</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="form-row">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="form-row">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <button class="btn" type="submit">Log in</button>
+    </form>
+</main>
+
+<style>
+    .login-container {
+        max-width: 420px;
+        margin: 40px auto;
+        padding: 20px;
+        color: #756537;
+    }
+    .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+    .form-row input {
+        padding: 10px;
+        border: 1px solid #756537;
+        border-radius: 4px;
+    }
+    .error-message {
+        color: #a00000;
+    }
+</style>
+{% endblock %}

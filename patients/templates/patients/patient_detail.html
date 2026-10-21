@@ -1,0 +1,199 @@
+{% extends 'patients/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="patient-detail-container">
+
+    <h2>Patient Information</h2>
+    
+    <div class="patient-detail-grid">
+        <div class="patient-info">
+            <div class="info-section">
+                <h3>Basic Information</h3>
+                <p><strong>Name:</strong> {{ patient.name }}</p>
+                <p><strong>Age:</strong> {{ patient.age }}</p>
+                <p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+                <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                <p><strong>Email:</strong> {{ patient.email|default:"-" }}</p>
+                <p><strong>Date of Diagnosis:</strong> {{ patient.date_of_diagnosis }}</p>
+
+                {% if patient.diagnosis %}
+                <p><strong>Diagnosis:</strong> {{ patient.diagnosis }}</p>
+                {% endif %}
+                
+                {% if patient.treatment %}
+                <p><strong>Treatment:</strong> {{ patient.treatment }}</p>
+                {% endif %}
+                
+                {% if patient.medication %}
+                <p><strong>Medication:</strong> {{ patient.medication }}</p>
+                {% endif %}
+                
+                {% if patient.notes %}
+                <p><strong>Notes:</strong> {{ patient.notes }}</p>
+                {% endif %}
+            </div>
+
+            {% for visit in visits %}
+                <div class="info-section">
+                    <h3>Sitting {{ visit.visit_number }}</h3>
+                    <p><strong>Date:</strong> {{ visit.date }}</p>
+                    {% if visit.diagnosis %}
+                    <p><strong>Diagnosis:</strong> {{ visit.diagnosis }}</p>
+                    {% endif %}
+                    {% if visit.treatment %}
+                    <p><strong>Treatment:</strong> {{ visit.treatment }}</p>
+                    {% endif %}
+                    {% if visit.medication %}
+                    <p><strong>Medication:</strong> {{ visit.medication }}</p>
+                    {% endif %}
+                    {% if visit.notes %}
+                    <p><strong>Notes:</strong> {{ visit.notes }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="patient-documents">
+            <h3>Patient Documents</h3>
+
+            {% if documents %}
+                {% for category in "diagnosis,treatment,medication,other"|split:"," %}
+                    {% with category_docs=documents|filter_by_category:category %}
+                        {% if category_docs %}
+                            <div class="document-category">
+                                <h4>{{ category_docs.0.get_category_display }}</h4>
+                                <div class="document-list">
+                                    {% for doc in category_docs %}
+                                    <div class="document-item">
+                                        <a href="{{ doc.file.url }}" target="_blank" class="document-link">
+                                            <i class="fas 
+                                                {% if doc.file_type == 'pdf' %}fa-file-pdf
+                                                {% elif doc.file_type == 'word' %}fa-file-word
+                                                {% elif doc.file_type == 'excel' %}fa-file-excel
+                                                {% elif doc.file_type == 'image' %}fa-file-image
+                                                {% else %}fa-file{% endif %}"></i>
+                                            {{ doc.file.name|filename }}
+                                        </a>
+                                        <span class="document-meta">
+                                            ({{ doc.file.size|filesizeformat }}, {{ doc.uploaded_at|date:"M d, Y" }})
+                                            {% if doc.visit %}
+                                                - Visit {{ doc.visit.visit_number }}
+                                            {% else %}
+                                                - Visit 1
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            {% else %}
+                <p>No documents uploaded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="action-buttons" style="margin-bottom: 20px;">
+        <a href="{% url 'view_patients' %}" class="btn">Back to List</a>
+        <a href="{% url 'edit_patient' patient.pk %}" class="btn">Edit Patient</a>
+        <a href="{% url 'add_visit' patient.pk %}" class="btn">Add Visit</a>
+        <a href="{% url 'delete_patient' patient.pk %}" class="btn btn-danger">Delete Patient</a>
+    </div>
+</div>
+
+<style>
+    .patient-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .patient-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 350px;
+    }
+    
+    .info-section {
+        margin-bottom: 25px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    
+    .document-category {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .document-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .document-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .document-link:hover {
+        color: #756537;
+    }
+    
+    .document-meta {
+        font-size: 0.8em;
+        color: #666;
+        margin-left: 28px;
+        margin-top: 2px;
+    }
+    
+    .action-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        background-color: #756537;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+    }
+    
+    /* Change colors for all headings */
+    .patient-detail-container h2,
+    .patient-detail-container h3,
+    .patient-detail-container h4,
+    .patient-documents h3,
+    .info-section h3,
+    .document-category h4 {
+        color: #756537;
+    }
+
+    .info-section p strong {
+        color: #756537;
+    }
+
+    @media (max-width: 768px) {
+        .patient-detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

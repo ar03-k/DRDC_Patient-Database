@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Rath's Dental Care</title>
+    <link rel="icon" type="image/png" href="{% static 'patients/images/Clinic Logo.png' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @font-face {
+            font-family: 'Monotype Corsiva';
+            src: local('Monotype Corsiva'), 
+                 local('MonotypeCorsiva');
+            font-weight: normal;
+            font-style: italic;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            min-height: 100vh;
+            background-color: #ffffe3;
+        }
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.25;
+            z-index: -1;
+        }
+        .global-watermark img {
+            width: 500px;
+            height: auto;
+        }
+        header {
+            background-color: #756537;
+            color: #ffffe3;
+            padding: 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+        }
+        nav {
+            background-color: #ffffe3;
+            overflow: hidden;
+            border-bottom: 3px solid #756537;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: #756537;
+            text-align: center;
+            padding: 10px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #756537;
+            color: #ffffe3;
+        }
+        .content-container {
+            margin-left: 2rem;
+            padding-right: 2rem;
+        }
+        header, nav {
+            margin-left: 0 !important;
+            padding-left: 0;
+        }
+        .add_patient, 
+        .patient-details, 
+        .view-patients-container {
+            margin-left: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn {
+            background-color: #756537;
+            color: #ffffe3;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-danger {
+            background-color: #ffffe3;
+            color: #756537;
+        }
+        .search-form {
+            margin: 20px 0;
+        }
+        .search-form input {
+            padding: 10px;
+            width: 300px;
+        }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3; 
+            z-index: -1;
+            pointer-events: none; 
+        }
+        .watermark img {
+            width: 500px; 
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{% static 'patients/images/Clinic Logo.png' %}" alt="Clinic Logo" style="width: 100px; height: 100px;">
+            <h1 style="color: #ffffe3; margin: 0 0 0 -10px;">
+                <span style="font-family: 'Monotype Corsiva', cursive; font-style: italic; font-size: 2.75rem; margin-right: 10px;">Dr. Rath's</span>
+                <span style="font-family: Arial, sans-serif;">DENTAL CARE</span>
+            </h1>
+        </div>
+    </header>
+    <nav>
+        <a href="{% url 'home' %}"><b>Home</b></a>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'add_patient' %}"><b>Add Patient</b></a>
+            <a href="{% url 'view_patients' %}"><b>View Patients</b></a>
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="nav-button"><b>Log out</b></button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}"><b>Log in</b></a>
+        {% endif %}
+    </nav>
+    {% if not request.path == '/' %}
+    <div class="global-watermark">
+        <img src="{% static 'patients/images/Clinic Logo.png' %}" alt="Clinic Logo">
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+    <style>
+        .nav-button {
+            padding: 10px 16px;
+            border: 0;
+            background: transparent;
+            color: #756537;
+            cursor: pointer;
+            font: inherit;
+        }
+        .nav-button:hover {
+            background-color: #756537;
+            color: #ffffe3;
+        }
+    </style>
+</body>
+</html>

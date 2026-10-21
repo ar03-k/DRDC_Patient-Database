@@ -1,0 +1,224 @@
+{% extends 'patients/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="page-header"><b>Add New Visit for {{ patient.name }}</b></h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-columns">
+            <div class="form-column">
+                <div class="form-row">
+                    {{ form.date.label_tag }}
+                    {{ form.date }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.diagnosis.label_tag }}
+                    {{ form.diagnosis }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.treatment.label_tag }}
+                    {{ form.treatment }}
+                </div>
+                
+                <!-- File Upload Sections - Left Column -->
+                <div class="file-upload-section" id="diagnosis-uploads">
+                    <h4>Diagnosis Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="diagnosis_files" multiple>
+                        <button type="button" class="btn btn-sm add-more">+ Add</button>
+                    </div>
+                </div>
+                
+                <div class="file-upload-section" id="treatment-uploads">
+                    <h4>Treatment Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="treatment_files" multiple>
+                        <button type="button" class="btn btn-sm add-more">+ Add</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-column">
+                <div class="form-row empty-row">
+                    <!-- Empty space to align with date field -->
+                    <label>&nbsp;</label>
+                    <div class="empty-field">&nbsp;</div>
+                </div>
+                
+                <div class="form-row">
+                    {{ form.medication.label_tag }}
+                    {{ form.medication }}
+                </div>
+                
+                <div class="form-row">
+                    {{ form.notes.label_tag }}
+                    {{ form.notes }}
+                </div>
+                
+                <!-- File Upload Sections - Right Column -->
+                <div class="file-upload-section" id="medication-uploads">
+                    <h4>Medication Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="medication_files" multiple>
+                        <button type="button" class="btn btn-sm add-more">+ Add</button>
+                    </div>
+                </div>
+                
+                <div class="file-upload-section" id="other-uploads">
+                    <h4>Other Documents</h4>
+                    <div class="upload-group">
+                        <input type="file" name="other_files" multiple>
+                        <button type="button" class="btn btn-sm add-more">+ Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-buttons">
+            <button type="submit" class="btn"><b>Add Visit</b></button>
+            <a href="{% url 'patient_detail' patient.pk %}" class="btn btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .page-header {
+        margin-bottom: 10px; /* Reduce from whatever it currently is */
+        margin-top: 0; /* Remove any top margin */
+    }
+
+    .form-container {
+        max-width: 1000px;
+        padding: 20px;
+        color: #756537;
+    }
+
+    h2.page-header {
+        margin-bottom: 10px; /* Specifically target the h2 */
+    }
+
+    .form-container {
+        max-width: 1000px;
+        padding: 20px;
+        color: #756537;
+        margin-left: 20px;
+    }
+    
+    .form-columns {
+        display: flex;
+        gap: 550px; 
+    }
+    
+    .form-column {
+        flex: 1;
+        min-width: 0; 
+    }
+    
+    .form-row {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    
+    .form-row label {
+        flex: 0 0 180px;
+        padding-right: 15px;
+        font-weight: 500;
+        color: #756537;
+        margin-top: 8px;
+    }
+    
+    .form-row input[type="text"],
+    .form-row input[type="date"],
+    .form-row textarea {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #756537;
+        border-radius: 4px;
+        min-width: 200px;
+        max-width: 300px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .form-row textarea {
+        height: 60px;
+        resize: vertical;
+    }
+    
+    .file-upload-section h4 {
+        margin-bottom: 10px;
+        color: #756537;
+    }
+    
+    .upload-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    .upload-group input[type="file"] {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        background-color: #756537;
+        color: #ffffe3;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .add-more {
+        background-color: #756537;
+        white-space: nowrap;
+    }
+    
+    .form-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+    
+    .btn-cancel {
+        background-color: #ffffe3;
+        color: #756537;
+        border: 1.5px solid #918151;
+        padding: 12px 15px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.add-more').forEach(button => {
+        button.addEventListener('click', function() {
+            const sectionId = this.closest('.file-upload-section').id;
+            const category = sectionId.replace('-uploads', '');
+            const newGroup = document.createElement('div');
+            newGroup.className = 'upload-group';
+            newGroup.innerHTML = `
+                <input type="file" name="${category}_files" multiple>
+                <button type="button" class="btn btn-sm remove-file">Remove</button>
+            `;
+            this.parentNode.parentNode.insertBefore(newGroup, this.parentNode.nextSibling);
+            
+            newGroup.querySelector('.remove-file').addEventListener('click', function() {
+                this.parentNode.remove();
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

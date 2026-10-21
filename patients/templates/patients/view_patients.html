@@ -1,0 +1,98 @@
+{% extends 'patients/base.html' %}
+
+{% block content %}
+<div class="patient-records-container">
+    <div class="header-section">
+        <h2 class="records-title"><b>Patient Records</b></h2>
+        
+        <div class="search-container">
+            <form class="search-form" method="get">
+                <input type="text" name="q" placeholder="Search patients..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn-search">Search</button>
+            </form>
+        </div>
+    </div>
+    
+    {% if patients %}
+    <div class="records-table-container">
+        <table class="records-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Date of Diagnosis</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.name }}</td>
+                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.get_gender_display }}</td>
+                        <td>{{ patient.phone }}</td>
+                        <td>{{ patient.date_of_diagnosis }}</td>
+                        <td>
+                            <a href="{% url 'patient_detail' patient.pk %}" class="btn">View</a>
+                            <a href="{% url 'delete_patient' patient.pk %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            {% else %}
+            <p style="color: #756537;">No patients found</p>
+            {% endif %}
+    </div>
+</div>
+
+<style>
+    .records-title {
+        color: #756537;
+    }
+
+    .records-table th {
+        background-color: #756537;
+        color: #ffffe3;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    .patient-records-container {
+        margin: 20px;
+    }
+    
+    .search-form input {
+        padding: 8px;
+        width: 300px;
+        border: 1px solid #756537;
+        border-radius: 4px;
+    }
+    
+    .btn-search {
+        padding: 8px 15px;
+        background-color: #756537;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        background-color: #756537;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-right: 5px;
+    }
+    
+    .btn-danger {
+        background-color: #ffffe3;
+        color: #756537;
+        border: 1px solid #756537;
+    }
+</style>
+{% endblock %}
